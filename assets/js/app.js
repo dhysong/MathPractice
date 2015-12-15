@@ -120,17 +120,20 @@ function changeView(view){
             break;
     }
     
+            console.log(problem.solution);
     renderProblem(problem);
 }
 
 function checkProblem(){
-    console.log($('#solvefor').val());
-    console.log(problem.solution);
     if($('#solvefor').val() == problem.solution) {
         $('#result').html('You got it right');  
+        problem.solution = null;
         var problemType = getRandomProblemType();
         setTimeout(function() { 
-            problem = createProblem(problemType, '+'); 
+            while (problem.solution == null || problem.solution < 1){
+                problem = createProblem(problemType, '+');
+                console.log(problem.solution);
+            }
             renderProblem(problem); 
             $('#result').html('');
         }
