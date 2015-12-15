@@ -1,18 +1,17 @@
 
 
-function createProblem(operator){
+function createProblem(questionType, operator){
     var problem = {
             'equation': [],
             'direction': 'horizontal',
             'solution': null
         },
-        questionType = Math.floor(Math.random() * 6) + 1,
         direction = Math.floor(Math.random() * 2) + 1 == 1 ? 'horizontal' : 'vertical',
         w = Math.floor(Math.random() * 10) + 1,
         x = Math.floor(Math.random() * 10) + 1,
         y = Math.floor(Math.random() * 10) + 1,
         z = Math.floor(Math.random() * 10) + 1;
-    console.log(questionType);
+    //console.log(questionType);
     switch(questionType) {
         case 1: // X + Y = Z : Unknown Z
             problem.equation.push(x);
@@ -39,7 +38,6 @@ function createProblem(operator){
             problem.equation.push('=');
             problem.equation.push(z);
             problem.direction = direction;
-            problem.solution = x + y;
             problem.solution = eval(z.toString() + (operator == '+' ? '-' : '+') + x.toString());
             break;
         case 4: // W + X + Y = Z : Unknown Z
@@ -63,19 +61,23 @@ function createProblem(operator){
             problem.solution = eval(z.toString() + (operator == '+' ? '-' : '+') + w.toString() + (operator == '+' ? '-' : '+') + y.toString());
             break;
         case 6: // W + X + Y = Z : Unknown W
-            problem.equation.push(w);
+            problem.equation.push('[solve]');
             problem.equation.push(operator);
             problem.equation.push(x);
             problem.equation.push(operator);
             problem.equation.push(y);
             problem.equation.push('=');
-            problem.equation.push('[solve]');
+            problem.equation.push(z);
             problem.solution = eval(z.toString() + (operator == '+' ? '-' : '+') + x + (operator == '+' ? '-' : '+') + y.toString());
             break;
         default:
             break;
     }
     return problem;
+}
+
+function getRandomProblemType(){
+    return Math.floor(Math.random() * 6) + 1;
 }
 
 function renderProblem(problem){
@@ -92,20 +94,27 @@ function renderProblem(problem){
 
 function changeView(view){
     problem.solution = null;
+    $('#questionType').html(view);
+    $('#result').html('');
     $('.nav li').removeClass('active');
     $('.' + view).addClass('active');
     $('.view').hide();
-    $('#' + view).show();
+    $('#mathContainer').show();
     $('.navbar-toggle').click() 
     
+    var problemType = getRandomProblemType();
     switch(view) {
         case 'addition':
             while (problem.solution == null || problem.solution < 1){
-                problem = createProblem('+');
+                problem = createProblem(problemType, '+');
+                console.log(problem.solution);
             }
             break;
         case 'subtraction':
-            problem = createProblem('-');
+            while (problem.solution == null || problem.solution < 1){
+                problem = createProblem(problemType, '-');
+                console.log(problem.solution);
+            }
             break;
         default:
             break;
@@ -115,10 +124,19 @@ function changeView(view){
 }
 
 function checkProblem(){
+    console.log($('#solvefor').val());
+    console.log(problem.solution);
     if($('#solvefor').val() == problem.solution) {
-        alert('true');   
+        $('#result').html('You got it right');  
+        var problemType = getRandomProblemType();
+        setTimeout(function() { 
+            problem = createProblem(problemType, '+'); 
+            renderProblem(problem); 
+            $('#result').html('');
+        }
+        , 1000);
     }
     else {
-        alert('false');   
+        $('#result').html('Wrong, try again');   
     }
 }

@@ -53,16 +53,19 @@
 	</div><!-- /main -->
 
 
-	<div id="addition" class="view" style="display:none; padding: 15px">
+	<div id="mathContainer" class="view" style="display:none; padding: 15px">
 	    <div class="container">
 	    		<div class="centered">
-	    			<h1 style="font-size: 24pt">Addition</h1>
+	    			<h1 id="questionType" style="font-size: 24pt"></h1>
                     <div class="row">
                         <div class="col-xs-12">
                             <div id="problem"></div>
                         </div>
+                        <div class="col-xs-12">
+                            <div id="result"></div>
+                        </div>
                         <div class="col-xs-12 check">
-                            <input type="button" value="Check" onclick="checkProblem();" />
+                            <input class="btn btn-default" type="submit" value="Check" onclick="checkProblem();">
                         </div>
                     </div>
 	    		</div><!-- /col-lg-8 -->

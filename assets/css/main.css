@@ -257,3 +257,9 @@ a:after {
 .check {
     padding: 50px;   
 }
+
+
+#result {
+    font-size: 45pt;
+    color: #FFF;
+}
