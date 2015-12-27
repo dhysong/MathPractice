@@ -36,7 +36,7 @@ app.prototype = function(){
         },
 
         renderProblem = function (problem){
-            var $solveFor = $('<input/>').attr({ type: 'text', id: 'solvefor', name: 'solvefor'}),
+            var $solveFor = $('<input/>').attr({ type: 'text', id: 'solvefor', name: 'solvefor', type: 'number'}),
                 i,
                 $part;
 
