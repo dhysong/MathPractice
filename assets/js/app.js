@@ -45,7 +45,9 @@ app.prototype = function(){
                 $part = problem.equation[i] == '[solve]' ? $solveFor : problem.equation[i];
                 $('#problem').append($part);
             }
-            $('#solvefor').focus();
+            setTimeout(function(){
+                $('#solvefor').focus();
+            }, 200);
         },
         
         checkSolution = function(){
