@@ -1,145 +1,84 @@
+function app(){}
 
-
-function createProblem(questionType, operator){
-    var problem = {
-            'equation': [],
-            'direction': 'horizontal',
-            'solution': null
-        },
-        direction = Math.floor(Math.random() * 2) + 1 == 1 ? 'horizontal' : 'vertical',
-        w = Math.floor(Math.random() * 10) + 1,
-        x = Math.floor(Math.random() * 10) + 1,
-        y = Math.floor(Math.random() * 10) + 1,
-        z = Math.floor(Math.random() * 10) + 1;
-    //console.log(questionType);
-    switch(questionType) {
-        case 1: // X + Y = Z : Unknown Z
-            problem.equation.push(x);
-            problem.equation.push(operator);
-            problem.equation.push(y);
-            problem.equation.push('=');
-            problem.equation.push('[solve]');
-            problem.direction = direction;
-            problem.solution = eval(x.toString() + operator + y.toString());
-            break;
-        case 2: // X + Y = Z : Unknown X
-            problem.equation.push('[solve]');
-            problem.equation.push(operator);
-            problem.equation.push(y);
-            problem.equation.push('=');
-            problem.equation.push(z);
-            problem.direction = direction;
-            problem.solution = eval(z.toString() + (operator == '+' ? '-' : '+') + y.toString());
-            break;
-        case 3: // X + Y = Z : Unknown Y
-            problem.equation.push(x);
-            problem.equation.push(operator);
-            problem.equation.push('[solve]');
-            problem.equation.push('=');
-            problem.equation.push(z);
-            problem.direction = direction;
-            problem.solution = eval(z.toString() + (operator == '+' ? '-' : '+') + x.toString());
-            break;
-        case 4: // W + X + Y = Z : Unknown Z
-            problem.equation.push(w);
-            problem.equation.push(operator);
-            problem.equation.push(x);
-            problem.equation.push(operator);
-            problem.equation.push(y);
-            problem.equation.push('=');
-            problem.equation.push('[solve]');
-            problem.solution = eval(w.toString() + operator + x.toString() + operator +  y.toString());
-            break;
-        case 5: // W + X + Y = Z : Unknown X
-            problem.equation.push(w);
-            problem.equation.push(operator);
-            problem.equation.push('[solve]');
-            problem.equation.push(operator);
-            problem.equation.push(y);
-            problem.equation.push('=');
-            problem.equation.push(z);
-            problem.solution = eval(z.toString() + (operator == '+' ? '-' : '+') + w.toString() + (operator == '+' ? '-' : '+') + y.toString());
-            break;
-        case 6: // W + X + Y = Z : Unknown W
-            problem.equation.push('[solve]');
-            problem.equation.push(operator);
-            problem.equation.push(x);
-            problem.equation.push(operator);
-            problem.equation.push(y);
-            problem.equation.push('=');
-            problem.equation.push(z);
-            problem.solution = eval(z.toString() + (operator == '+' ? '-' : '+') + x + (operator == '+' ? '-' : '+') + y.toString());
-            break;
-        default:
-            break;
-    }
-    return problem;
-}
-
-function getRandomProblemType(){
-    return Math.floor(Math.random() * 6) + 1;
-}
-
-function renderProblem(problem){
-    var $solveFor = $('<input/>').attr({ type: 'text', id: 'solvefor', name: 'solvefor'}),
-        i,
-        $part;
+app.prototype = function(){
     
-    $('#problem').html('');
-    for(i = 0; i < problem.equation.length; i++){
-        $part = problem.equation[i] == '[solve]' ? $solveFor : problem.equation[i];
-        $('#problem').append($part);
-    }
-}
+    var generator = null,
+        
+        problem = {},
 
-function changeView(view){
-    problem.solution = null;
-    $('#questionType').html(view);
-    $('#result').html('');
-    $('.nav li').removeClass('active');
-    $('.' + view).addClass('active');
-    $('.view').hide();
-    $('#mathContainer').show();
-    $('.navbar-toggle').click() 
-    
-    var problemType = getRandomProblemType();
-    switch(view) {
-        case 'addition':
-            while (problem.solution == null || problem.solution < 1){
-                problem = createProblem(problemType, '+');
-                console.log(problem.solution);
-            }
-            break;
-        case 'subtraction':
-            while (problem.solution == null || problem.solution < 1){
-                problem = createProblem(problemType, '-');
-                console.log(problem.solution);
-            }
-            break;
-        default:
-            break;
-    }
-    
-            console.log(problem.solution);
-    renderProblem(problem);
-}
+        changeView = function (view){
+            if(problem && problem.solution) problem.solution = null;
 
-function checkProblem(){
-    if($('#solvefor').val() == problem.solution) {
-        $('#result').html('You got it right');  
-        problem.solution = null;
-        var problemType = getRandomProblemType();
-        setTimeout(function() { 
-            while (problem.solution == null || problem.solution < 1){
-                problem = createProblem(problemType, '+');
-                console.log(problem.solution);
-            }
-            renderProblem(problem); 
+            $('#questionType').html(view);
             $('#result').html('');
-        }
-        , 1000);
-    }
-    else {
-        $('#result').html('Wrong, try again');   
-    }
-}
+            $('.nav li').removeClass('active');
+            $('.' + view).addClass('active');
+            $('.view').hide();
+            $('#mathContainer').show();
+            $('.navbar-toggle').click();
+
+            switch(view.toLowerCase()) {
+                case 'addition':
+                    problem.operator = '+';
+                    break;
+                case 'subtraction':
+                    problem.operator = '-';
+                    break;
+                default:
+                    break;
+            }
+
+            while (problem == null || problem.solution == null || problem.solution < 1){
+                problem = generator.createProblem(problem.operator);
+            }
+            console.log(problem.solution);
+            renderProblem(problem);
+        },
+
+        renderProblem = function (problem){
+            var $solveFor = $('<input/>').attr({ type: 'text', id: 'solvefor', name: 'solvefor'}),
+                i,
+                $part;
+
+            $('#problem, #result').html('');
+            for(i = 0; i < problem.equation.length; i++){
+                $part = problem.equation[i] == '[solve]' ? $solveFor : problem.equation[i];
+                $('#problem').append($part);
+            }
+            $('#solvefor').focus();
+        },
+        
+        checkSolution = function(){
+            var solvedValue = $('#solvefor').val();
+            console.log(solvedValue);
+            var isCorrect = problem.checkProblem(solvedValue);
+            if(isCorrect){
+                $('#result').html('You got it right!');  
+                setTimeout(function() { 
+                    while (problem == null || problem.solution == null || problem.solution < 1){
+                        problem = generator.createProblem(problem.operator);
+                    }
+                    console.log(problem);
+                    console.log(problem.solution);
+                    renderProblem(problem);
+                }
+                , 1000);
+            }
+            else{
+                $('#result').html('Hang on sloopy. Let\'s try that again.'); 
+            }
+        },
+
+        init = function() {        
+            generator = new mathProblemGenerator();
+            problem = generator.getProblem();
+            
+            $('.nav li').click(function(){ 
+                changeView($(this).data('view'));
+            });
+            
+            $('#checkProblem').click(checkSolution);
+        };
+    
+    return {init: init, changeView: changeView}
+}();

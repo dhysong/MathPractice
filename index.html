@@ -7,7 +7,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Math Practice</title>
+    <title>Sloopy Math Lab</title>
 
     <!-- Bootstrap core CSS -->
     <link href="assets/css/bootstrap.css" rel="stylesheet">
@@ -33,9 +33,9 @@
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
-            <li class="main active"><a onclick="changeView('main');">Home</a></li>
-            <li class="addition"><a onclick="changeView('addition');">Addition</a></li>
-            <li class="subtraction"><a onclick="changeView('subtraction');">Subtraction</a></li>
+            <li class="main active" data-view="Sloop Math"><a>Home</a></li>
+            <li class="addition" data-view="Addition"><a>Addition</a></li>
+            <li class="subtraction" data-view="Subtraction"><a>Subtraction</a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
@@ -46,7 +46,7 @@
 	    <div class="container">
 	    	<div class="row">
 	    		<div class="col-lg-8 col-lg-offset-2 centered">
-	    			<h1 style="font-size: 40pt">Math<br/>Practice</h1>
+	    			<h1 style="font-size: 40pt">Sloopy<br/>Math<br/>Lab</h1>
 	    		</div><!-- /col-lg-8 -->
 	    	</div><!-- /row -->
 	    </div> <!-- /container -->
@@ -56,16 +56,17 @@
 	<div id="mathContainer" class="view" style="display:none; padding: 15px">
 	    <div class="container">
 	    		<div class="centered">
-	    			<h1 id="questionType" style="font-size: 24pt"></h1>
+	    			<h1 id="questionType" style="font-size: 4em"></h1>
                     <div class="row">
                         <div class="col-xs-12">
                             <div id="problem"></div>
                         </div>
+                        <div class="col-xs-12 check">
+                            <input id="checkProblem" class="btn btn-default" type="submit" value="Check">
+                        </div>
                         <div class="col-xs-12">
                             <div id="result"></div>
-                        </div>
-                        <div class="col-xs-12 check">
-                            <input class="btn btn-default" type="submit" value="Check" onclick="checkProblem();">
+                            <div style="font-size: 2em; color: #FFF; padding-right: 10px; display:none;">Need a hint<i class="fa fa-question-circle"></i></div>
                         </div>
                     </div>
 	    		</div><!-- /col-lg-8 -->
@@ -76,6 +77,14 @@
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="assets/js/bootstrap.js"></script>
+    <script src="assets/js/mathProblemGenerator.js"></script>
     <script src="assets/js/app.js"></script>
+      
+    <script type="text/javascript">
+        $(document).onload = function(){
+            var myApp = new app();
+            myApp.init();
+        }();
+    </script>
   </body>
 </html>
